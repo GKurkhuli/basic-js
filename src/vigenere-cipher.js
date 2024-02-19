@@ -20,13 +20,51 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(direct = true){
+    this.direct = direct;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  areArgumentsValid(message, key){
+    if(!message || typeof message !== 'string' || !key || typeof key !== 'string'){
+      throw new Error('Incorrect arguments!');
+    }
+  }
+  encrypt(message, key) {
+    this.areArgumentsValid(message,key);
+    message = message.toUpperCase();
+    key = key.toUpperCase();
+    const result = [];
+    let keyInex = 0;
+    for(let i = 0; i < message.length; i++){
+      const char = message[i];
+      if(char >= 'A' && char <= 'Z'){
+        const shift = key[keyInex % key.length].charCodeAt(0) - 'A'.charCodeAt(0);
+        const encrypted = String.fromCharCode(((char.charCodeAt(0) - 'A'.charCodeAt(0) + shift) % 26) + 'A'.charCodeAt(0));
+        result.push(encrypted);
+        keyInex++;
+      }else{
+        result.push(char);
+      }
+    }
+    return this.direct ? result.join('') : result.reverse().join('');
+  }
+  decrypt(encryptedMessage, key) {
+    this.areArgumentsValid(encryptedMessage,key);
+    encryptedMessage = encryptedMessage.toUpperCase();
+    key = key.toUpperCase();
+    let keyInex = 0;
+    const result = [];
+    for(let i = 0; i < encryptedMessage.length; i++){
+      const char = encryptedMessage[i];
+      if(char >= 'A' && char <= 'Z'){
+        const shift = key[keyInex % key.length].charCodeAt(0) - 'A'.charCodeAt(0);
+        const decrypted = String.fromCharCode(((char.charCodeAt(0) - 'A'.charCodeAt(0) - shift + 26) % 26) + 'A'.charCodeAt(0));
+        result.push(decrypted);
+        keyInex++;
+      }else{
+        result.push(char);
+      }
+    }
+    return this.direct ? result.join('') : result.reverse().join('');
   }
 }
 
