@@ -15,11 +15,19 @@ function getSeason(date) {
   if (!date) {
     return 'Unable to determine the time of year!';
   }
-  if (!(date instanceof Date) || isNaN(date.getTime())) {
+  if (!(date instanceof Date)) {
+    throw new Error('Invalid date!');
+  }
+
+  if (isNaN(date.getTime())) {
     throw new Error('Invalid date!');
   }
 
   const month = date.getMonth();
+
+  if (isNaN(month)) {
+    throw new Error('Invalid date!');
+  }
 
   if (month >= 2 && month <= 4) {
     return 'spring';
